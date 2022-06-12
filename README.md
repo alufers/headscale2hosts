@@ -19,6 +19,7 @@ You can either run the program directly or use the supplied docker image. The pr
 | `HEADSCALE2HOSTS_API_KEY` | **REQUIRED** | The API key you use to connect to headscale |
 | `HEADSCALE2HOSTS_NAMESPACE` | **REQUIRED** | The namespace to query from |
 | `HEADSCALE2HOSTS_DOMAIN_SUFFIX` | `` | The domain suffix to add to each of the devices |
+| `HEADSCALE2HOSTS_HOSTS_FILE` | `hosts` | The path to the hosts file to write |
 | `HEADSCALE2HOSTS_CHECK_INTERVAL` | `1m` | How often to query headscale and regenerate the hosts file |
 
 You can obtain the API key by running the following command on the coordinator:
@@ -27,3 +28,20 @@ You can obtain the API key by running the following command on the coordinator:
 $ headscale apikeys create -e 999999h
 ```
 
+## Example `docker-compose.yml`
+
+```yaml
+version: "3"
+services:
+  headscale2hosts:
+    image: ghcr.io/alufers/headscale2hosts:latest
+    restart: unless-stopped
+    volumes:
+      - ./dnsconfig:/dnsconfig
+    environment:
+      HEADSCALE2HOSTS_SERVER_URL: "<headscale server url>"
+      HEADSCALE2HOSTS_API_KEY: "<headscale api key>"
+      HEADSCALE2HOSTS_NAMESPACE: "<headscale namespace>"
+      HEADSCALE2HOSTS_DOMAIN_SUFFIX: "<domain suffix>"
+      HEADSCALE2HOSTS_HOSTS_FILE: /dnsconfig/headscale.hosts
+```
